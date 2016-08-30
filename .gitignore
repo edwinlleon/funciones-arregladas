@@ -1,0 +1,53 @@
+<?php 
+
+
+
+ function escribir($cons)
+        {
+			//se crea una variable con la finalidad de incluir la funcion de retornar tabla creada en el archivo BD.php
+			$res = $this->retornar_tabla($cons);
+			//echo $cons;
+			$b="";
+			while($fila = mysqli_fetch_array($res)) 
+			{
+				$b .="<tr>";
+				for ($i=0; $i < mysqli_num_fields($res); $i++) 
+				{ 
+					$b .="<td class='success'>".utf8_encode($fila [$i])."</td>";
+				} 
+				$b .="<td class='success'><a href='javascript:mostrarVentana(".utf8_encode($fila[0]).");'><img src='../imagenes/borrar.png'></a>&ensp; &ensp;";
+				//$b .="<a href='javascript:mostrarVentana();'><img src='../imagenes/actualizar.png'></a></td>"; 
+				$b .="<a href='insertar.php?actualizador=1&id=".utf8_encode($fila[0])."'><img src='../imagenes/actualizar.png'></a></td>"; 
+				$b .="</tr>";
+			}
+			Return $b; 
+        }
+
+
+   public function traer_valor_campo($campo,$tabla,$id,$valor_id)
+        {
+            $respuesta = "";
+             $sql = " SELECT $campo AS $campo FROM $tabla WHERE $id = '$valor_id' ";
+            $conexion = $this->conectar_a_bd();
+            $resultado = $conexion->query( $sql );
+            while( $fila = mysqli_fetch_assoc( $resultado ) )
+            {
+                $respuesta = utf8_encode($fila[ $campo ]);
+            }
+            mysqli_free_result( $resultado ); //Se libera la memoria destinada a la recopilación de datos de la BD.
+            return $respuesta;
+           // return $sql;
+        }
+		
+		
+		 function escribir_opcion($cons,$id,$desc)
+		{
+			$r = $this->retornar_tabla($cons); //esta funcion biene de BD.php y retorna los datos de la consulta a realizar
+			$rta = "";   
+			while ($row = mysqli_fetch_assoc ( $r ))
+			{
+				$rta.="<OPTION  value='".$row [ $id ]."' selected >".utf8_encode($row [ $desc ])."</OPTION>"; 
+			}	
+			return $rta;
+		} 
+ ?>
